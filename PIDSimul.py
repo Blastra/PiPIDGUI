@@ -4,7 +4,7 @@ from PySide.QtGui import *
 import inspect
 
 import atexit
-import pyaudio
+#import pyaudio
 import wave
 import threading
 import platform
@@ -24,9 +24,9 @@ class Form(QDialog):
         SigSisäänKilpi = QLabel("Signaali sisään")
         SigUlosKilpi = QLabel("Signaali ulos")
 
-        PKomponentti = QLabel("P-komponentti")
-        IKomponentti = QLabel("I-komponentti")
-        DKomponentti = QLabel("D-komponentti")
+        PKomponenttiKilpi = QLabel("P-komponentti")
+        IKomponenttiKilpi = QLabel("I-komponentti")
+        DKomponenttiKilpi = QLabel("D-komponentti")
 
         #Vääntönapit
 
@@ -105,6 +105,8 @@ class Form(QDialog):
         DDialJaLineBox.addWidget(DOhjain)
         DDialJaLineBox.addWidget(DKenttä)
 
+        
+
         #asd
 
         #Tulo- ja lähtösignaalien alueet
@@ -129,22 +131,27 @@ class Form(QDialog):
         hyllystö.addLayout(KomponenttiRivi)
         PKompLaatikko = QVBoxLayout()
         IKompLaatikko = QVBoxLayout()
-        DKompLaatikko = QVBoxLayout()        
+        DKompLaatikko = QVBoxLayout()
+        KomponenttiRivi.addLayout(PKompLaatikko)
+        KomponenttiRivi.addLayout(IKompLaatikko)
+        KomponenttiRivi.addLayout(DKompLaatikko)
 
-        #KomponenttiRivi.addLayout(SisäänSignLaatikko)
-        #SignaaliLaatikkoRivi.addLayout(UlosSignLaatikko)
-        
-        #SisäänSignLaatikko.addWidget(SisäSignNäkymä)
-        #UlosSignLaatikko.addWidget(UlosSignNäkymä)
-
-        #SisäänSignLaatikko.addWidget(SigSisäänKilpi)
-        #UlosSignLaatikko.addWidget(SigUlosKilpi)
+        #Komponenttirivin piirtoalueet
 
         
         
+
+        PKompLaatikko.addWidget(PSignNäkymä)
+        PKompLaatikko.addWidget(PKomponenttiKilpi)
+
+        IKompLaatikko.addWidget(ISignNäkymä)
+        IKompLaatikko.addWidget(IKomponenttiKilpi)
+        
+        DKompLaatikko.addWidget(DSignNäkymä)
+        DKompLaatikko.addWidget(DKomponenttiKilpi)        
+
+        self.showMaximized()
         self.setLayout(hyllystö)
-
-        
         
         
 app = QApplication(sys.argv)
@@ -153,5 +160,6 @@ app = QApplication(sys.argv)
 form = Form()
 #form.connect(app,SIGNAL("aboutToQuit()"),clearSound)
 form.show()
-app.exec_()   
+app.exec_()
+
         
