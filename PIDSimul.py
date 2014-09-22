@@ -2,6 +2,7 @@ import sys
 from PySide.QtCore import *
 from PySide.QtGui import *
 import inspect
+import math as m
 
 import atexit
 #import pyaudio
@@ -9,12 +10,21 @@ import wave
 import threading
 import platform
 
+class SignaaliKäyrä(QPainterPath):
+    def __init__(self, parent=None):
+        super(SignaaliKäyrä, self).__init__(parent)
+
+    def getPos():
+        print(self.currentPosition)
+
 class Form(QDialog):    
+
+    
 
     def __init__(self, parent=None):
         super(Form, self).__init__(parent)
 
-        self.setWindowTitle("PID-säädin")
+        self.setWindowTitle("PID-säädin")        
 
         #Tekstikilvet
         POhjKilpi = QLabel("Proportionaalikerroin")
@@ -105,9 +115,18 @@ class Form(QDialog):
         DDialJaLineBox.addWidget(DOhjain)
         DDialJaLineBox.addWidget(DKenttä)
 
-        
+        def PäivitäPKenttä():
+            PKenttä.setText(str(round(POhjain.value()*0.2,2)))
 
-        #asd
+        def PäivitäIKenttä():
+            IKenttä.setText(str(round(IOhjain.value()*0.2,2)))
+
+        def PäivitäDKenttä():
+            DKenttä.setText(str(round(DOhjain.value()*0.2,2)))
+        
+        self.connect(POhjain,SIGNAL("sliderReleased()"), PäivitäPKenttä)
+        self.connect(IOhjain,SIGNAL("sliderReleased()"), PäivitäIKenttä)
+        self.connect(DOhjain,SIGNAL("sliderReleased()"), PäivitäDKenttä)
 
         #Tulo- ja lähtösignaalien alueet
 
@@ -136,10 +155,7 @@ class Form(QDialog):
         KomponenttiRivi.addLayout(IKompLaatikko)
         KomponenttiRivi.addLayout(DKompLaatikko)
 
-        #Komponenttirivin piirtoalueet
-
-        
-        
+        #Komponenttirivin piirtoalueet        
 
         PKompLaatikko.addWidget(PSignNäkymä)
         PKompLaatikko.addWidget(PKomponenttiKilpi)
@@ -150,9 +166,91 @@ class Form(QDialog):
         DKompLaatikko.addWidget(DSignNäkymä)
         DKompLaatikko.addWidget(DKomponenttiKilpi)        
 
-        self.showMaximized()
-        self.setLayout(hyllystö)
+        #Funktioiden kuvaajia varten aloitettavat kynät ja pensselit
+
+        kaariKynä = QPen()
+
+        kaariPensseli = QBrush()
+
+        #Funktioiden polkujen piirto
         
+        sisäSignAlkuPiste = round(SisäSignNäkymä.width()/2)
+        sisäSignLeveys = int(round(SisäSignNäkymä.width()/2))
+        sigY = 20*m.sin((sisäSignLeveys-2)*0.1)
+
+        """
+        
+
+                
+
+        
+            #nextX = syötePolku.currentPosition().toTuple()[0]
+            #nextY = syötePolku.currentPosition().toTuple()[1]+5
+            #syötePolku.translate(nextX,nextY)
+            #SisäänSignNäytös.update()
+        """ 
+        """
+            try:
+                paikka+=4
+            except:
+                paikka=0
+            
+
+            
+            
+            
+            #print(SisäSignNäkymä.width())
+            syötePolku.moveTo(sisäSignAlkuPiste+30+paikka,0)
+        """
+        while sisäSignLeveys > 2:
+            sisäSignLeveys-=2
+            
+            sigYsec = 20*m.sin(sisäSignLeveys*0.1)
+            SisäänSignNäytös.addLine(-sisäSignLeveys,sigY,-sisäSignLeveys+2,sigYsec,kaariKynä)
+            sigY = 20*m.sin((sisäSignLeveys+2)*0.1)
+
+        
+        def käyrienSiirto():
+            käyränPalat = SisäänSignNäytös.items()
+            print(dir(käyränPalat[0]))
+            #for pätkä in käyränPalat:
+            #    pätkä.trans+=5
+
+        tick = QTimer(self)
+        tick.start(100)
+
+        #print(SisäänSignNäytös.items())
+        
+        #self.connect(tick,SIGNAL("timeout()"),uudelleenPiirto)
+        self.connect(tick,SIGNAL("timeout()"),käyrienSiirto)
+
+        
+        
+
+        #self.showMaximized()
+        self.setLayout(hyllystö)
+
+        """
+        def uudelleenPiirto():
+            SisäänSignNäytös.clear()
+            print("dirr")
+            sisäSignAlkuPiste = round(SisäSignNäkymä.width()/2)
+            sisäSignLeveys = int(round(SisäSignNäkymä.width()/2))
+            sigY = 20*m.sin((sisäSignLeveys-2)*0.1)
+                
+            while sisäSignLeveys > 2:
+                sisäSignLeveys-=2
+                
+                sigYsec = 20*m.sin(sisäSignLeveys*0.1)
+                SisäänSignNäytös.addLine(-sisäSignLeveys,sigY,-sisäSignLeveys+2,sigYsec,kaariKynä)
+                sigY = 20*m.sin((sisäSignLeveys+2)*0.1)
+            SisäänSignNäytös.advance()    
+                
+            
+
+        
+        """
+    
         
 app = QApplication(sys.argv)
 #Cleanup on exit
