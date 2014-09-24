@@ -423,7 +423,7 @@ class Form(QDialog):
             #print(pätkä.line().x1())
 
         tick = QTimer(self)
-        tick.start(50)
+        tick.start(200)
 
         #print(SisäänSignNäytös.items())
         
