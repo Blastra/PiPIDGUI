@@ -43,6 +43,8 @@ class Form(QDialog):
         IKomponenttiKilpi = QLabel("I-komponentti")
         DKomponenttiKilpi = QLabel("D-komponentti")
 
+        ###
+
         #Vääntönapit
 
         POhjain = QDial()
@@ -434,7 +436,7 @@ class Form(QDialog):
             #print(pätkä.line().x1())
 
         tick = QTimer(self)
-        tick.start(200)
+        tick.start(50)
 
         #print(SisäänSignNäytös.items())
         
