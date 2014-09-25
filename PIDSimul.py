@@ -30,7 +30,11 @@ class Form(QDialog):
         #Tekstikilvet
         POhjKilpi = QLabel("Proportionaalikerroin")
         IOhjKilpi = QLabel("Integraalikerroin")
+        IAikaOhjKilpi = QLabel("Integrointiväli\naskelissa")
         DOhjKilpi = QLabel("Differentiaalikerroin")
+        DAikaOhjKilpi = QLabel("Derivointiväli\naskelissa")
+        AskelOhjKilpi = QLabel("Askelpituus")
+        NäytOttoTaajuusKilpi = QLabel("Näytteenottotaajuus")
 
         SigSisäänKilpi = QLabel("Signaali sisään")
         SigUlosKilpi = QLabel("Signaali ulos")
@@ -43,13 +47,20 @@ class Form(QDialog):
 
         POhjain = QDial()
         IOhjain = QDial()
+        IAikaOhjain = QDial()
         DOhjain = QDial()
+        DAikaOhjain = QDial()
+        NäytOttoTaajOhjain = QDial()
 
         #Syötekentät
 
         PKenttä = QLineEdit("0")
         IKenttä = QLineEdit("0")
+        IAikaKenttä = QLineEdit("1")
         DKenttä = QLineEdit("0")
+        DAikaKenttä = QLineEdit("100")
+        NäytOttoTaajKenttä = QLineEdit("20")
+        
 
         #Piirtoalueet
 
