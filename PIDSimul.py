@@ -97,26 +97,42 @@ class Form(QDialog):
         
         POhjLaatikko = QVBoxLayout()
         IOhjLaatikko = QVBoxLayout()
+        IAikaOhjLaatikko = QVBoxLayout()
         DOhjLaatikko = QVBoxLayout()
+        DAikaOhjLaatikko = QVBoxLayout()
+        NäytOttoTaajuusLaatikko = QVBoxLayout()
+        
         PDialJaLineBox = QHBoxLayout()
         IDialJaLineBox = QHBoxLayout()
+        IAikaDialJaLineBox = QHBoxLayout()
         DDialJaLineBox = QHBoxLayout()
+        DAikaDialJaLineBox = QHBoxLayout()
+        NäytOttoDialJaLineBox = QHBoxLayout()
 
         OhjainRivi.addLayout(POhjLaatikko)
         OhjainRivi.addLayout(IOhjLaatikko)
+        OhjainRivi.addLayout(IAikaOhjLaatikko)
         OhjainRivi.addLayout(DOhjLaatikko)
+        OhjainRivi.addLayout(DAikaOhjLaatikko)
+        OhjainRivi.addLayout(NäytOttoTaajuusLaatikko)
 
         #Ensimmäisen rivin kilvet
 
         POhjLaatikko.addWidget(POhjKilpi)
         IOhjLaatikko.addWidget(IOhjKilpi)
+        IAikaOhjLaatikko.addWidget(IAikaOhjKilpi)
         DOhjLaatikko.addWidget(DOhjKilpi)
+        DAikaOhjLaatikko.addWidget(DAikaOhjKilpi)
+        NäytOttoTaajuusLaatikko.addWidget(NäytOttoTaajuusKilpi)
 
         #Dialien ja LineEditien tilat kilpien alla
 
         POhjLaatikko.addLayout(PDialJaLineBox)
+        IAikaOhjLaatikko.addLayout(IAikaDialJaLineBox)
         IOhjLaatikko.addLayout(IDialJaLineBox)
+        DAikaOhjLaatikko.addLayout(DAikaDialJaLineBox)
         DOhjLaatikko.addLayout(DDialJaLineBox)
+        NäytOttoTaajuusLaatikko.addLayout(NäytOttoDialJaLineBox)
 
         #Kääntönapit ja syötekentät
 
@@ -126,8 +142,20 @@ class Form(QDialog):
         IDialJaLineBox.addWidget(IOhjain)
         IDialJaLineBox.addWidget(IKenttä)
 
+        
+        IAikaDialJaLineBox.addWidget(IAikaOhjain)
+        IAikaDialJaLineBox.addWidget(IAikaKenttä)
+
         DDialJaLineBox.addWidget(DOhjain)
         DDialJaLineBox.addWidget(DKenttä)
+
+        
+        DAikaDialJaLineBox.addWidget(DAikaOhjain)
+        DAikaDialJaLineBox.addWidget(DAikaKenttä)
+
+        
+        NäytOttoDialJaLineBox.addWidget(NäytOttoTaajOhjain)
+        NäytOttoDialJaLineBox.addWidget(NäytOttoTaajKenttä)
 
         def PäivitäPKenttä():
             PKenttä.setText(str(round(POhjain.value()*0.2,2)))
@@ -135,8 +163,17 @@ class Form(QDialog):
         def PäivitäIKenttä():
             IKenttä.setText(str(round(IOhjain.value()*0.2,2)))
 
+        def PäivitäIAikaKenttä():
+            IAikaKenttä.setText(str(round(IAikaOhjain.value())))
+
         def PäivitäDKenttä():
             DKenttä.setText(str(round(DOhjain.value()*0.2,2)))
+
+        def PäivitäDAikaKenttä():
+            DAikaKenttä.setText(str(round(DAikaOhjain.value())))
+
+        def PäivitäNäytOttoTaajKenttä():
+            NäytOttoTaajKenttä.setText(str(round(NäytOttoTaajOhjain.value())))
 
         def PäivitäPOhjain():
             try:
@@ -150,17 +187,43 @@ class Form(QDialog):
             except:
                 pass
 
+        def PäivitäIAikaOhjain():
+            try:
+                IAikaOhjain.setValue(float(IAikaKenttä.text()))
+            except:
+                pass
+
         def PäivitäDOhjain():
             try:
                 DOhjain.setValue(float(DKenttä.text())*5)
             except:
                 pass
+
+        def PäivitäDAikaOhjain():
+            try:
+                DAikaOhjain.setValue(float(DAikaKenttä.text()))
+            except:
+                pass
+
+        def PäivitäNäytOttoTaajOhjain():
+            try:
+                NäytOttoTaajOhjain.setValue(float(NäytOttoTaajKenttä.text()))
+            except:
+                pass
         
         self.connect(POhjain,SIGNAL("sliderReleased()"), PäivitäPKenttä)
         self.connect(IOhjain,SIGNAL("sliderReleased()"), PäivitäIKenttä)
+        self.connect(IAikaOhjain,SIGNAL("sliderReleased()"), PäivitäIAikaKenttä)
         self.connect(DOhjain,SIGNAL("sliderReleased()"), PäivitäDKenttä)
+        self.connect(DAikaOhjain,SIGNAL("sliderReleased()"), PäivitäDAikaKenttä)
+        self.connect(NäytOttoTaajOhjain,SIGNAL("sliderReleased()"), PäivitäNäytOttoTaajKenttä)
 
         self.connect(PKenttä,SIGNAL("editingFinished()"), PäivitäPOhjain)
+        self.connect(IKenttä,SIGNAL("editingFinished()"), PäivitäIOhjain)
+        self.connect(IAikaKenttä,SIGNAL("editingFinished()"), PäivitäIAikaOhjain)
+        self.connect(DKenttä,SIGNAL("editingFinished()"), PäivitäDOhjain)
+        self.connect(DAikaKenttä,SIGNAL("editingFinished()"), PäivitäDAikaOhjain)
+        self.connect(NäytOttoTaajKenttä,SIGNAL("editingFinished()"), PäivitäNäytOttoTaajOhjain)
 
         #Tulo- ja lähtösignaalien alueet
 
@@ -318,11 +381,12 @@ class Form(QDialog):
                 self.PviimeSigYYksi = PdataPiste
 
             ########### I-käyrän piirto ####################
-            
+
+            #TODO: lisää nollaviivaa, jos ei olla ylitetty IAikaKentän ilmoittamaa askelmäärää
             try:
                 self.summainKertymä += (self.viimeDataPiste-seurDataPiste)*askel/2*float(IKenttä.text())
                 IdataPiste = self.summainKertymä
-            except:
+            except AttributeError:
                 IdataPiste = 0
 
             IjanaSiirretty = 0
@@ -344,7 +408,7 @@ class Form(QDialog):
                         ISignNäytös.removeItem(ISignNäytös.items()[IpoistettavaIndeksi])
                     try:
                         Ipätkä.setLine(-Ialku,IdataPiste,-Ialku+askel,self.IviimeSigYYksi)    
-                    except:
+                    except AttributeError:
                         Ipätkä.setLine(-Ialku,IdataPiste,-Ialku+askel,0)
                     
                     IviimeSiirtoJana = Ipätkä
@@ -352,15 +416,18 @@ class Form(QDialog):
             if IjanaSiirretty == 0:
                 try:
                     ISignNäytös.addLine(-Ialku,IdataPiste,-Ialku+askel,self.IviimeSigYYksi)
-                except:
+                except AttributeError:
                     pass
                 self.IviimeSigYYksi = IdataPiste
 
             ############## D-käyrän piirto ####################
 
+            #TODO: lisää nollaviivaa, jos ei olla ylitetty DAikaKentän ilmoittamaa askelmäärää
+
             try:
+                
                 DdataPiste = (self.viimeDataPiste-seurDataPiste)/askel*float(DKenttä.text())
-            except:
+            except AttributeError:
                 DdataPiste = 0
             #DdataPiste = dataPiste*float(DKenttä.text())
             DjanaSiirretty = 0
