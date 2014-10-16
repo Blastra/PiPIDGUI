@@ -221,7 +221,9 @@ class Form(QDialog):
                 NaytOttoTaajOhjain.setValue(float(NaytOttoTaajKentta.text()))
                 tick.stop()
                 tick.start(1000/round(float(NaytOttoTaajKentta.text())))
+                print "Naytteenottotaajuus UUDELLEEN ASETETTU"
             except:
+                print "Jotakin meni PIELEEN TAAJUUDEN UUDELLEENASETUKSESSA"
                 pass
 
         self.connect(OhjeArvoOhjain,SIGNAL("sliderReleased()"), PaivitaOhjeArvoKentta)
@@ -437,45 +439,8 @@ class Form(QDialog):
 
               
             try:
-                self.summainKertyma= float(IKentta.text())*(0.9*self.summainKertyma+0.1*uusiIDataPiste)  #min(-100,self.summainKertyma+uusiIDataPiste)
+                self.summainKertyma= float(IKentta.text())*(0.9*self.summainKertyma+0.1*uusiIDataPiste)   
                 #self.summainKertyma= max(100,self.summainKertyma)
-                """
-                tapausYksi = False
-                #Eri integrointitapaukset
-                
-                #Molemmat arvot positiivisia
-                if self.viimeDataPiste >= 0 and uusiIDataPiste >= 0:
-                    tapausYksi = True
-                    suurempi = max(self.viimeDataPiste,uusiIDataPiste)
-                    pienempi = min(self.viimeDataPiste,uusiIDataPiste)
-                    #Lisätään kolmio ja laatikko
-                    self.summainKertyma += (((suurempi-pienempi)*askel/2*+askel*pienempi)*float(IKentta.text()))
-                    #print "Tapaus 1 "+str((((suurempi-pienempi)*askel/2*+askel*pienempi)*float(IKentta.text())))
-                elif self.viimeDataPiste < 0 and uusiIDataPiste > 0:
-                    #Edellinen arvo negatiivinen, jälkimmäinen positiivinen
-                    c = uusiIDataPiste
-                    d = self.viimeDataPiste
-                    self.summainKertyma += ((c**2/(c-d)*askel/2 - d**2/(c-d)*askel/2 )*float(IKentta.text()))
-                    #print "Tapaus 2 "+str(((c**2/(c-d)*askel/2 - d**2/(c-d)*askel/2 )*float(IKentta.text())))
-                elif self.viimeDataPiste > 0 and uusiIDataPiste < 0:
-                    #Edellinen arvo positiivinen, jälkimmäinen negatiivinen
-                    c = uusiIDataPiste
-                    d = self.viimeDataPiste
-                    self.summainKertyma += ((d**2/(d-c)*askel/2 - c**2/(d-c)*askel/2)*float(IKentta.text()))
-                    #print "Tapaus 3 "+str(((d**2/(d-c)*askel/2 - c**2/(d-c)*askel/2)*float(IKentta.text())))
-                elif self.viimeDataPiste <= 0 and uusiIDataPiste <= 0 and tapausYksi == False:
-                    #Molemmat arvot negatiivisia                     
-                    suurempi = max(self.viimeDataPiste,uusiIDataPiste)
-                    pienempi = min(self.viimeDataPiste,uusiIDataPiste)
-                    #Lisätään kolmio ja laatikko
-                    self.summainKertyma -= (((pienempi-suurempi)*askel/2*+askel*suurempi)*float(IKentta.text()))
-                    #print "Tapaus 4 "+str((((pienempi-suurempi)*askel/2*+askel*suurempi)*float(IKentta.text())))
-                    #print "Kolmio "+str((pienempi-suurempi)*askel/2)
-                    #print "Suorakulmio "+str(askel*suurempi)
-                else:
-                    self.summainKertyma += 0
-                #self.summainKertyma = m.log10(abs(self.summainKertyma))*self.summainKertyma
-                """
             except:
                 IdataPiste = 0
             
@@ -484,7 +449,7 @@ class Form(QDialog):
                 #print("integrointivali saavutettu")
                 self.otetutIAskeleet = 0
                 ### Kertymään lisääminen
-                IdataPiste = self.summainKertyma*float(IKentta.text())
+                IdataPiste = self.summainKertyma  #*float(IKentta.text())
             else:
                 IdataPiste = self.IviimeSigYYksi
 
