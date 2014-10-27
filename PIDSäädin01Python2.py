@@ -9,15 +9,8 @@ import random
 import smbus as sb
 import RPi.GPIO as RPIO
 
-"""
-class SignaaliKayra(QPainterPath):
-    def __init__(self, parent=None):
-        super(SignaaliKayra, self).__init__(parent)
-
-    def getPos():
-        print(self.currentPosition)
-"""
-
+ila = 6
+print "frr" +str(6)
 
 class Form(QDialog):    
 
@@ -31,7 +24,11 @@ class Form(QDialog):
         #Tekstikilvet
         POhjKilpi = QLabel("Proportionaalikerroin")
         IOhjKilpi = QLabel("Integraalikerroin")
+        IAikaOhjKilpi = QLabel("Integrointivali\naskelissa")
         DOhjKilpi = QLabel("Differentiaalikerroin")
+        DAikaOhjKilpi = QLabel("Derivointivali\naskelissa")
+        AskelOhjKilpi = QLabel("Askelpituus")
+        NaytOttoTaajuusKilpi = QLabel("Naytteenottotaajuus")
 
         SigSisaanKilpi = QLabel("Signaali sisaan")
         SigUlosKilpi = QLabel("Signaali ulos")
@@ -44,13 +41,20 @@ class Form(QDialog):
 
         POhjain = QDial()
         IOhjain = QDial()
+        IAikaOhjain = QDial()
         DOhjain = QDial()
+        DAikaOhjain = QDial()
+        NaytOttoTaajOhjain = QDial()
 
         #Syotekentat
 
         PKentta = QLineEdit("0")
         IKentta = QLineEdit("0")
+        IAikaKentta = QLineEdit("1")
         DKentta = QLineEdit("0")
+        DAikaKentta = QLineEdit("100")
+        NaytOttoTaajKentta = QLineEdit("20")
+        
 
         #Piirtoalueet
 
@@ -85,26 +89,42 @@ class Form(QDialog):
         
         POhjLaatikko = QVBoxLayout()
         IOhjLaatikko = QVBoxLayout()
+        IAikaOhjLaatikko = QVBoxLayout()
         DOhjLaatikko = QVBoxLayout()
+        DAikaOhjLaatikko = QVBoxLayout()
+        NaytOttoTaajuusLaatikko = QVBoxLayout()
+        
         PDialJaLineBox = QHBoxLayout()
         IDialJaLineBox = QHBoxLayout()
+        IAikaDialJaLineBox = QHBoxLayout()
         DDialJaLineBox = QHBoxLayout()
+        DAikaDialJaLineBox = QHBoxLayout()
+        NaytOttoDialJaLineBox = QHBoxLayout()
 
         OhjainRivi.addLayout(POhjLaatikko)
         OhjainRivi.addLayout(IOhjLaatikko)
+        OhjainRivi.addLayout(IAikaOhjLaatikko)
         OhjainRivi.addLayout(DOhjLaatikko)
+        OhjainRivi.addLayout(DAikaOhjLaatikko)
+        OhjainRivi.addLayout(NaytOttoTaajuusLaatikko)
 
         #Ensimmaisen rivin kilvet
 
         POhjLaatikko.addWidget(POhjKilpi)
         IOhjLaatikko.addWidget(IOhjKilpi)
+        IAikaOhjLaatikko.addWidget(IAikaOhjKilpi)
         DOhjLaatikko.addWidget(DOhjKilpi)
+        DAikaOhjLaatikko.addWidget(DAikaOhjKilpi)
+        NaytOttoTaajuusLaatikko.addWidget(NaytOttoTaajuusKilpi)
 
         #Dialien ja LineEditien tilat kilpien alla
 
         POhjLaatikko.addLayout(PDialJaLineBox)
+        IAikaOhjLaatikko.addLayout(IAikaDialJaLineBox)
         IOhjLaatikko.addLayout(IDialJaLineBox)
+        DAikaOhjLaatikko.addLayout(DAikaDialJaLineBox)
         DOhjLaatikko.addLayout(DDialJaLineBox)
+        NaytOttoTaajuusLaatikko.addLayout(NaytOttoDialJaLineBox)
 
         #Kaantonapit ja syotekentat
 
@@ -114,8 +134,20 @@ class Form(QDialog):
         IDialJaLineBox.addWidget(IOhjain)
         IDialJaLineBox.addWidget(IKentta)
 
+        
+        IAikaDialJaLineBox.addWidget(IAikaOhjain)
+        IAikaDialJaLineBox.addWidget(IAikaKentta)
+
         DDialJaLineBox.addWidget(DOhjain)
         DDialJaLineBox.addWidget(DKentta)
+
+        
+        DAikaDialJaLineBox.addWidget(DAikaOhjain)
+        DAikaDialJaLineBox.addWidget(DAikaKentta)
+
+        
+        NaytOttoDialJaLineBox.addWidget(NaytOttoTaajOhjain)
+        NaytOttoDialJaLineBox.addWidget(NaytOttoTaajKentta)
 
         def PaivitaPKentta():
             PKentta.setText(str(round(POhjain.value()*0.2,2)))
@@ -123,8 +155,17 @@ class Form(QDialog):
         def PaivitaIKentta():
             IKentta.setText(str(round(IOhjain.value()*0.2,2)))
 
+        def PaivitaIAikaKentta():
+            IAikaKentta.setText(str(round(IAikaOhjain.value())))
+
         def PaivitaDKentta():
             DKentta.setText(str(round(DOhjain.value()*0.2,2)))
+
+        def PaivitaDAikaKentta():
+            DAikaKentta.setText(str(round(DAikaOhjain.value())))
+
+        def PaivitaNaytOttoTaajKentta():
+            NaytOttoTaajKentta.setText(str(round(NaytOttoTaajOhjain.value())))
 
         def PaivitaPOhjain():
             try:
@@ -138,17 +179,45 @@ class Form(QDialog):
             except:
                 pass
 
+        def PaivitaIAikaOhjain():
+            try:
+                IAikaOhjain.setValue(float(IAikaKentta.text()))
+            except:
+                pass
+
         def PaivitaDOhjain():
             try:
                 DOhjain.setValue(float(DKentta.text())*5)
             except:
                 pass
+
+        def PaivitaDAikaOhjain():
+            try:
+                DAikaOhjain.setValue(float(DAikaKentta.text()))
+            except:
+                pass
+
+        def PaivitaNaytOttoTaajOhjain():
+            try:
+                NaytOttoTaajOhjain.setValue(float(NaytOttoTaajKentta.text()))
+            except:
+                pass
         
         self.connect(POhjain,SIGNAL("sliderReleased()"), PaivitaPKentta)
         self.connect(IOhjain,SIGNAL("sliderReleased()"), PaivitaIKentta)
+        self.connect(IAikaOhjain,SIGNAL("sliderReleased()"), PaivitaIAikaKentta)
         self.connect(DOhjain,SIGNAL("sliderReleased()"), PaivitaDKentta)
+        self.connect(DAikaOhjain,SIGNAL("sliderReleased()"), PaivitaDAikaKentta)
+        self.connect(NaytOttoTaajOhjain,SIGNAL("sliderReleased()"), PaivitaNaytOttoTaajKentta)
 
         self.connect(PKentta,SIGNAL("editingFinished()"), PaivitaPOhjain)
+        self.connect(IKentta,SIGNAL("editingFinished()"), PaivitaIOhjain)
+        self.connect(IAikaKentta,SIGNAL("editingFinished()"), PaivitaIAikaOhjain)
+        self.connect(DKentta,SIGNAL("editingFinished()"), PaivitaDOhjain)
+        self.connect(DAikaKentta,SIGNAL("editingFinished()"), PaivitaDAikaOhjain)
+        self.connect(NaytOttoTaajKentta,SIGNAL("editingFinished()"), PaivitaNaytOttoTaajOhjain)
+
+
 
         #Tulo- ja lahtosignaalien alueet
 
@@ -202,18 +271,36 @@ class Form(QDialog):
 
         self.summainKertyma = 0
 
-        #Datavaylan maarittely
-
+        #Datavaylien maarittely
+        #Huom. anturina GY-30 BH1750FVI
+        #Anturin kytkennat Raspberryyn:
+        #VCC: Pin 2
+        #SDA: Pin 3
+        #SCL: Pin 5
+        #GND: Pin 6
+        """
         bus = sb.SMBus(1)
-                        
-        
+
+        #Kanavan 7 LEDin Inputin alustus
+        #Etuvastuksella 330R-470R
+
+        RPIO.setmode(RPIO.BOARD)
+        RPIO.setup(7, RPIO.OUT)
+        self.inputVayla = RPIO.PWM(7, 50)   #Kanava 7, taajuus 50Hz
+        self.inputVayla.start(0)
+        """
         def kayrienSiirto():
 
             askel = 4
-            #Data sisaan
-            #dataPiste = random.randint(-30,30)
-            dataSisaan = bus.read_i2c_block_data(0x23,0x11)
-            dataPiste = -5*m.log((dataSisaan[1]+(256*dataSisaan[0]))/1.2)
+            #Datan lukeminen anturilta            
+
+            #dataSisaan = bus.read_i2c_block_data(0x23,0x11)
+    
+            #print((dataSisaan[1]+(256*dataSisaan[0]))/1.2)
+            
+            #dataPiste = (dataSisaan[1]+(256*dataSisaan[0]))/1.2
+
+            dataPiste = random.randint(0,10)
 
             #Nakyman rajan asettelu (Skaalauksen muuttuessa viela TODO bugikorjausta
             #signaalin piirtymisessa)
@@ -392,6 +479,11 @@ class Form(QDialog):
 
             summaDataPiste = PdataPiste+IdataPiste+DdataPiste
 
+            #### Summan vaikutus LEDin syöttöön ####
+
+            print "summaDataPiste: "+str(summaDataPiste)
+            #self.inputVayla.ChangeDutyCycle(min(2.5*abs(summaDataPiste),100))
+            
             summaJanaSiirretty = 0
             for summaPatka in summaKayranPalat:                
                 summaxYksi = summaPatka.line().x1()
@@ -424,10 +516,8 @@ class Form(QDialog):
                 self.summaViimeSigYYksi = summaDataPiste            
 
     
-            #Ledi kiinni kanavaan 12
-            #Etuvastuksella 330R-470R
-                
-            #print(patka.line().x1())
+                 
+            
 
         tick = QTimer(self)
         tick.start(200)
@@ -436,8 +526,6 @@ class Form(QDialog):
         
         #self.connect(tick,SIGNAL("timeout()"),uudelleenPiirto)
         self.connect(tick,SIGNAL("timeout()"),kayrienSiirto)
-
-        
         
 
         #self.showMaximized()
@@ -468,8 +556,14 @@ class Form(QDialog):
 app = QApplication(sys.argv)
 #Cleanup on exit
 
+def poistuminen():
+    print("Cleaning up GPIO")
+    #form.inputVayla.stop()
+    #RPIO.cleanup()
+    
+
 form = Form()
-#form.connect(app,SIGNAL("aboutToQuit()"),clearSound)
+form.connect(app,SIGNAL("aboutToQuit()"),poistuminen)
 form.show()
 app.exec_()
 
